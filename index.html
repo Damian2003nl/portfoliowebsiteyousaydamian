@@ -21,21 +21,18 @@
         }
         
         .portfolio-container {
-            display: flex;
-            width: 600vw;
-            height: 100vh;
-            overflow-y: hidden;
+            width: 100vw;
+            overflow-x: hidden;
         }
         
         .book-page {
             width: 100vw;
-            height: 100vh;
+            min-height: 100vh;
             padding: 5rem 2rem;
             display: flex;
             flex-direction: column;
             justify-content: center;
             position: relative;
-            overflow-y: auto;
         }
         
         .page-shadow {
@@ -161,7 +158,7 @@
         <a href="#contact" class="folio-indicator rounded-full bg-gray-300"></a>
     </div>
 
-    <div class="portfolio-container" id="portfolio-container">
+    <div class="portfolio-container">
         <!-- Cover Page -->
         <section id="cover" class="book-page bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100">
             <div class="container mx-auto px-4" data-aos="fade-up">
@@ -171,7 +168,7 @@
                     <div class="flex justify-center space-x-4">
                         <a href="#about" class="folio-nav px-8 py-3 bg-indigo-600 text-white rounded-full shadow-lg flex items-center">
                             <span>Begin Reading</span>
-                            <i data-feather="arrow-right" class="ml-2 w-5 h-5"></i>
+                            <i data-feather="arrow-down" class="ml-2 w-5 h-5"></i>
                         </a>
                     </div>
                 </div>
@@ -449,17 +446,16 @@
             const sections = document.querySelectorAll('section');
             const navLinks = document.querySelectorAll('.folio-indicator');
             
-            const portfolioContainer = document.getElementById('portfolio-container');
-            
-            portfolioContainer.addEventListener('scroll', function() {
+            window.addEventListener('scroll', function() {
                 let current = '';
-                const scrollLeft = portfolioContainer.scrollLeft;
-                const pageWidth = window.innerWidth;
-                const currentPage = Math.round(scrollLeft / pageWidth);
                 
-                if (currentPage >= 0 && currentPage < sections.length) {
-                    current = sections[currentPage].getAttribute('id');
-                }
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.clientHeight;
+                    if (window.scrollY >= (sectionTop - sectionHeight / 3)) {
+                        current = section.getAttribute('id');
+                    }
+                });
                 
                 navLinks.forEach(link => {
                     link.classList.remove('active');
@@ -475,16 +471,12 @@
                     e.preventDefault();
                     const targetId = this.getAttribute('href');
                     const targetSection = document.querySelector(targetId);
-                    const pageIndex = Array.from(sections).indexOf(targetSection);
-                    portfolioContainer.scrollTo({
-                        left: pageIndex * window.innerWidth,
+                    window.scrollTo({
+                        top: targetSection.offsetTop,
                         behavior: 'smooth'
                     });
                 });
             });
-            
-            // Make portfolio container full viewport height
-            portfolioContainer.style.height = `${window.innerHeight}px`;
         });
         
         function moveCarousel(direction, carouselId) {
@@ -525,11 +517,6 @@
             clickedThumbnail.querySelector('img').src = currentSrc;
         }
         
-        // Handle window resize
-        window.addEventListener('resize', function() {
-            const portfolioContainer = document.getElementById('portfolio-container');
-            portfolioContainer.style.height = `${window.innerHeight}px`;
-        });
     </script>
 </body>
 </html>
